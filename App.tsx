@@ -1,20 +1,87 @@
+import React from 'react';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Text } from 'react-native';
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import DashboardScreen from './src/screens/DashboardScreen';
+import ClientsScreen from './src/screens/ClientsScreen';
+import { COLORS } from './src/constants/theme';
+
+const Tab = createBottomTabNavigator();
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <QueryClientProvider client={queryClient}>
+      <NavigationContainer>
+        <StatusBar style="light" />
+        <Tab.Navigator
+          screenOptions={{
+            tabBarStyle: {
+              backgroundColor: COLORS.surface,
+              borderTopColor: COLORS.border,
+              borderTopWidth: 1,
+            },
+            tabBarActiveTintColor: COLORS.gold,
+            tabBarInactiveTintColor: COLORS.textMuted,
+            headerStyle: {
+              backgroundColor: COLORS.background,
+              borderBottomColor: COLORS.border,
+              borderBottomWidth: 1,
+            },
+            headerTintColor: COLORS.gold,
+            headerTitleStyle: {
+              fontWeight: '700',
+            },
+          }}
+        >
+          <Tab.Screen
+            name="Dashboard"
+            component={DashboardScreen}
+            options={{
+              tabBarLabel: 'Control Tower',
+              tabBarIcon: ({ color }) => <TabIcon icon="🎯" color={color} />,
+              headerShown: false,
+            }}
+          />
+          <Tab.Screen
+            name="Clients"
+            component={ClientsScreen}
+            options={{
+              tabBarLabel: 'Clients',
+              tabBarIcon: ({ color }) => <TabIcon icon="👥" color={color} />,
+              headerShown: false,
+            }}
+          />
+          <Tab.Screen
+            name="Analytics"
+            component={DashboardScreen}
+            options={{
+              tabBarLabel: 'Analytics',
+              tabBarIcon: ({ color }) => <TabIcon icon="📊" color={color} />,
+              headerShown: false,
+            }}
+          />
+          <Tab.Screen
+            name="Settings"
+            component={DashboardScreen}
+            options={{
+              tabBarLabel: 'Settings',
+              tabBarIcon: ({ color }) => <TabIcon icon="⚙️" color={color} />,
+              headerShown: false,
+            }}
+          />
+        </Tab.Navigator>
+      </NavigationContainer>
+    </QueryClientProvider>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+function TabIcon({ icon, color }: { icon: string; color: string }) {
+  return (
+    <Text style={{ fontSize: 24 }}>
+      {icon}
+    </Text>
+  );
+}
